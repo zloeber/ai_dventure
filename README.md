@@ -39,7 +39,7 @@ You stand at the gates of a mysterious castle. The wind howls and the moon glows
 
 ## Requirements
 - Rust
-- OpenAI API key (input arg)
+- OpenAI API key (ENV variable OPENAI_API_KEY)
 
 ## License
 [*MIT*](LICENSE)
