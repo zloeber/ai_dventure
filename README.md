@@ -12,7 +12,6 @@ Screenshot from initial gameplay
 - **Dynamic Choices:** At every turn, you can select one of the suggested options or invent your own action to diverge from the main plot. The AI will adapt and continue the story!
 - **Inventory & State:** Your items, location, and story summary are tracked and updated as you play.
 - **Theme Selection:** Choose your adventure's theme or let the AI surprise you!
-- **Rich Status Display:** See your character's name, inventory, visited locations, and more.
 
 ## How to Play 🎮
 1. **Start the game** and enter your name.
@@ -39,7 +38,7 @@ You stand at the gates of a mysterious castle. The wind howls and the moon glows
 
 ## Requirements
 - Rust
-- OpenAI API key (ENV variable OPENAI_API_KEY)
+- OpenAI API key (ENV variable `OPENAI_API_KEY`)
 
 ## License
 [*MIT*](LICENSE)
