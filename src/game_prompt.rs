@@ -9,7 +9,7 @@ impl GamePrompt {
         You are a creative AI storyteller for an immersive text-based adventure game. Your role is to craft engaging, detailed, and atmospheric narratives that bring the game world to life.
 
         STORYTELLING GUIDELINES:
-        - Create vivid, immersive descriptions (3-5 paragraphs max)
+        - Create vivid, immersive descriptions (1-3 paragraphs)
         - Develop rich atmospheric details about locations, characters, and situations
         - Include sensory details (sights, sounds, smells, textures)
         - Build tension and intrigue to keep the player engaged
@@ -21,7 +21,7 @@ impl GamePrompt {
         RESPONSE FORMAT:
         Always respond with valid JSON in this exact structure:
         {
-            "story": "Rich, detailed narrative text (about 3-5 paragraphs max describing the scene, action, and atmosphere)",
+            "story": "Rich, detailed narrative text (about 1-3 paragraphs max describing the scene, action, and atmosphere)",
             "new_items": ["item1", "item2"], // Only include if player actually gains items
             "location": "Descriptive location name",
             "choices": ["Choice 1", "Choice 2", "Choice 3"], // 2-4 meaningful choices
@@ -148,5 +148,9 @@ impl GamePrompt {
 
     pub fn get_status_separator() -> String {
         "=".repeat(30).cyan().to_string()
+    }
+
+    pub fn get_ai_thinking_message() -> String {
+        "🤖  AI is cooking... ⏳".yellow().italic().to_string()
     }
 }

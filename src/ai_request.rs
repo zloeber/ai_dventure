@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{game_prompt::GamePrompt, game_state::GameState};
+use crate::{game_prompt::GamePrompt, game_state::GameState, gpt_model::GptModel};
 
-// Strutture semplici per chat
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatRequest {
     pub model: String,
@@ -24,7 +24,7 @@ pub struct Message {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ResponseFormat {
     #[serde(rename = "type")]
-    pub format_type: String, // "json_object" per forzare JSON
+    pub format_type: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -37,7 +37,7 @@ pub struct Choice {
     pub message: Message,
 }
 
-// Struttura per le risposte JSON del gioco
+// Struct for the game response
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameResponse {
     pub story: String,
@@ -66,22 +66,22 @@ impl Message {
 pub struct AiRequest {
     client: reqwest::Client,
     api_key: String,
+    model: GptModel,
 }
 
 impl AiRequest {
-    pub fn new(api_key: String) -> Self {
+    pub fn new(api_key: String, model: GptModel) -> Self {
         AiRequest {
             client: reqwest::Client::new(),
             api_key,
+            model,
         }
     }
 
     
     pub async fn json_chat(&self, game_state: &GameState) -> Result<GameResponse, Box<dyn std::error::Error>> {
-        let model = "gpt-4o-mini".to_string();
         let system_prompt = GamePrompt::get_system_prompt();
         
-        // Costruisco il prompt utente con tutto il contesto necessario
         let user_prompt = GamePrompt::build_game_context_prompt(game_state);
         
         let messages = vec![
@@ -90,7 +90,7 @@ impl AiRequest {
         ];
         
         let request = ChatRequest {
-            model,
+            model: self.model.into(),
             messages,
             max_tokens: Some(3000),
             temperature: Some(0.9),
