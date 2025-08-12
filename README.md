@@ -22,6 +22,10 @@ Screenshot from initial gameplay
 4. **Repeat**: The AI will continue the adventure, updating your inventory and story summary.
 5. **Type `status`** to view your current state, or `quit` to exit.
 
+
+
+
+
 ## Example
 ```
 You stand at the gates of a mysterious castle. The wind howls and the moon glows ominously.
@@ -39,6 +43,16 @@ You stand at the gates of a mysterious castle. The wind howls and the moon glows
 ## Requirements
 - Rust
 - OpenAI API key (ENV variable `OPENAI_API_KEY`)
+
+## Command line arguments
+The application accepts the following parameters
+- `--api-key`: specify custom key if not defined in env
+- `--model`: choose OpenAI GPT model (e.g. `gpt-3.5-turbo`, `gpt-4o-mini`, `gpt-4-turbo`, etc.). If not specified `gpt-4o-mini` is used
+- 
+Example:
+```bash
+cargo run -- --api-key <YOUR_API_KEY> --model gpt-5
+```
 
 ## License
 [*MIT*](LICENSE)
