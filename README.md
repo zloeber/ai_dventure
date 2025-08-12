@@ -4,6 +4,9 @@ Welcome to **AI-Dventure**! 🚀
 
 Embark on a thrilling journey through worlds of fantasy, horror, sci-fi, or history, all narrated by a powerful AI. Your choices shape the story, your inventory grows, and your adventure is unique every time!
 
+![Example](screenshot.png)
+Screenshot from initial gameplay
+
 ## Features ✨
 - **AI Storyteller:** The game uses OpenAI to generate immersive, creative, and unpredictable stories.
 - **Dynamic Choices:** At every turn, you can select one of the suggested options or invent your own action to diverge from the main plot. The AI will adapt and continue the story!
@@ -36,10 +39,10 @@ You stand at the gates of a mysterious castle. The wind howls and the moon glows
 
 ## Requirements
 - Rust
-- OpenAI API key (save it in a file named `api.key`)
+- OpenAI API key (input arg)
 
 ## License
-MIT
+[*MIT*](LICENSE)
 
 ---
 Ready to shape your own legend? 🏰🦄👽

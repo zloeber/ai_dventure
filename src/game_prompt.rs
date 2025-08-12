@@ -1,5 +1,6 @@
 use colored::*;
 use crate::game_state::GameState;
+use textwrap;
 
 pub struct GamePrompt {}
 
@@ -106,7 +107,7 @@ impl GamePrompt {
             Player name: {}\n\
             Theme: {}\n\
             Start the adventure with an interesting scenario that requires player choice.\n\
-            Provide 2-3 numbered choices for the player.\n\
+            Provide 3 choices for the player.\n\
             Respond in the specified JSON format.",
             player_name, theme
         )
@@ -152,5 +153,10 @@ impl GamePrompt {
 
     pub fn get_ai_thinking_message() -> String {
         "🤖  AI is cooking... ⏳".yellow().italic().to_string()
+    }
+
+    pub fn format_story(story: &str) -> String {
+        let wrapped = textwrap::wrap(story, 80);
+        wrapped.join("\n")
     }
 }

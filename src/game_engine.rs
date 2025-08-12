@@ -37,7 +37,7 @@ impl GameEngine {
             
             // Show the initial story
             println!("\n{}", GamePrompt::get_adventure_start_header());
-            println!("{}", response.story.white());
+            println!("{}", GamePrompt::format_story(&response.story).white());
             
             if !response.choices.is_empty() {
                 println!("\n{}", GamePrompt::get_choices_header());
@@ -145,7 +145,7 @@ impl GameEngine {
             
             // Show the new story
             println!("\n{}", GamePrompt::get_adventure_continues_header());
-            println!("{}", response.story.white());
+            println!("{}", GamePrompt::format_story(&response.story).white());
             
             if !response.choices.is_empty() {
                 println!("\n{}", GamePrompt::get_choices_header());
