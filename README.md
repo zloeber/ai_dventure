@@ -51,7 +51,14 @@ The application accepts the following parameters
 - 
 Example:
 ```bash
+# Run in development mode
 cargo run -- --api-key <YOUR_API_KEY> --model gpt-5
+
+# Build a release binary
+cargo build --release
+
+# Run the release binary
+./target/release/ai_dventure --api-key <YOUR_API_KEY> --model gpt-5
 ```
 
 ## License
