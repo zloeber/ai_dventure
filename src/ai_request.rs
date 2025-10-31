@@ -92,7 +92,7 @@ impl AiRequest {
         ];
         
         let request = ChatRequest {
-            model: self.model.clone().into(),
+            model: self.model.as_str().to_string(),
             messages,
             max_tokens: Some(3000),
             temperature: Some(0.9),

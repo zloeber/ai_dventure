@@ -7,6 +7,16 @@ impl GptModel {
     pub fn new(model_name: String) -> Self {
         GptModel { model_name }
     }
+    
+    pub fn as_str(&self) -> &str {
+        &self.model_name
+    }
+}
+
+impl AsRef<str> for GptModel {
+    fn as_ref(&self) -> &str {
+        &self.model_name
+    }
 }
 
 impl Into<String> for GptModel {
