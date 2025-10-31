@@ -73,28 +73,34 @@ impl GameEngine {
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
 
-        let mut custom_theme = String::new();
-        
         let themes = &self.config.prompts.themes;
-        let theme = match input.trim() {
-            "1" if themes.len() > 0 => themes[0].as_str(),
-            "2" if themes.len() > 1 => themes[1].as_str(),
-            "3" if themes.len() > 2 => themes[2].as_str(),
-            "4" if themes.len() > 3 => themes[3].as_str(),
-            "5" if themes.len() > 4 => themes[4].as_str(),
-            "6" => {
+        let theme = if let Ok(choice) = input.trim().parse::<usize>() {
+            if choice == 6 {
+                // Custom theme option
                 print!("Enter your custom theme: ");
                 io::stdout().flush().unwrap();
                 
+                let mut custom_theme = String::new();
                 io::stdin().read_line(&mut custom_theme)?;
-                custom_theme.trim()
-            },
-            _ if !themes.is_empty() => themes[0].as_str(), // Default to first theme
-            _ => "Medieval fantasy with dragons, magic, elves and enchanted kingdoms",
+                custom_theme.trim().to_string()
+            } else if choice > 0 && choice <= themes.len() {
+                // Valid theme selection
+                themes[choice - 1].clone()
+            } else {
+                // Invalid choice, use default
+                themes.first()
+                    .cloned()
+                    .unwrap_or_else(|| "Medieval fantasy with dragons, magic, elves and enchanted kingdoms".to_string())
+            }
+        } else {
+            // Invalid input, use default
+            themes.first()
+                .cloned()
+                .unwrap_or_else(|| "Medieval fantasy with dragons, magic, elves and enchanted kingdoms".to_string())
         };
         
-        println!("\n{}", GamePrompt::get_theme_selected_message(theme, &self.config.prompts));
-        Ok(theme.to_string())
+        println!("\n{}", GamePrompt::get_theme_selected_message(&theme, &self.config.prompts));
+        Ok(theme)
     }
 
     async fn game_loop(&mut self) -> Result<(), Box<dyn std::error::Error>> {

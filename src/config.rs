@@ -133,12 +133,13 @@ impl Config {
     }
 
     /// Load configuration from config.yml if it exists, otherwise return default
+    /// Prints status to stderr to avoid interfering with game output
     pub fn load() -> Self {
         let config_path = "config.yml";
         if Path::new(config_path).exists() {
             match Self::from_file(config_path) {
                 Ok(config) => {
-                    println!("✓ Loaded configuration from config.yml");
+                    eprintln!("✓ Loaded configuration from config.yml");
                     config
                 }
                 Err(e) => {
