@@ -1,0 +1,11 @@
+[env]
+_.source = '.envrc'
+
+[settings]
+python.uv_venv_auto = true
+
+[tools]
+task = 'latest'
+yq = "latest"
+jq = 'latest'
+rust = 'latest'

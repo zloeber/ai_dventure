@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+silent: true
+
+tasks:
+  build:
+    desc: Build the project
+    cmds:
+      - cargo build
+
+  build-release:
+    desc: Build the project in release mode
+    cmds:
+      - cargo build --release
+
+  run:
+    desc: Run the project
+    cmds:
+      - cargo run
+
+  test:
+    desc: Run tests
+    cmds:
+      - cargo test
+
+  test-verbose:
+    desc: Run tests with verbose output
+    cmds:
+      - cargo test -- --nocapture
+
+  check:
+    desc: Check the project for errors
+    cmds:
+      - cargo check
+
+  clippy:
+    desc: Run clippy linter
+    cmds:
+      - cargo clippy -- -D warnings
+
+  fmt:
+    desc: Format code
+    cmds:
+      - cargo fmt
+
+  fmt-check:
+    desc: Check if code is formatted
+    cmds:
+      - cargo fmt -- --check
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - cargo clean
+
+  doc:
+    desc: Generate documentation
+    cmds:
+      - cargo doc --no-deps --open
+
+  update:
+    desc: Update dependencies
+    cmds:
+      - cargo update
+
+  audit:
+    desc: Audit dependencies for security vulnerabilities
+    cmds:
+      - cargo audit
+
+  bench:
+    desc: Run benchmarks
+    cmds:
+      - cargo bench
+
+  install:
+    desc: Install the binary
+    cmds:
+      - cargo install --path .

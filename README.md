@@ -64,10 +64,6 @@ cargo run -- --base-url http://localhost:11434/v1 --model mistral
 cargo run -- --base-url http://localhost:11434/v1 --model codellama
 ```
 
-
-
-
-
 ## Example Gameplay
 ```
 === ADVENTURE BEGINS ===
