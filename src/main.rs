@@ -10,16 +10,24 @@ mod gpt_model;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(long, env = "OPENAI_API_KEY")]
+    #[arg(long, env = "OPENAI_API_KEY", default_value = "")]
     api_key: String,
     #[arg(long, default_value = "gpt-4o-mini")]
     model: String,
+    #[arg(long, env = "OPENAI_BASE_URL", default_value = "https://api.openai.com/v1")]
+    base_url: String,
 }
 
-async fn check_api_key(api_key: &str) -> Result<(), Box<dyn std::error::Error>> {
+async fn check_api_key(api_key: &str, base_url: &str) -> Result<(), Box<dyn std::error::Error>> {
+    // Skip validation if API key is empty (for local endpoints that don't require auth)
+    if api_key.is_empty() {
+        return Ok(());
+    }
+    
     let client = reqwest::Client::new();
+    let models_url = format!("{}/models", base_url);
     let response = client
-        .get("https://api.openai.com/v1/models")
+        .get(&models_url)
         .bearer_auth(api_key)
         .send()
         .await?;
@@ -37,14 +45,15 @@ async fn check_api_key(api_key: &str) -> Result<(), Box<dyn std::error::Error>> 
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     let api_key = args.api_key;
+    let base_url = args.base_url;
     let model: GptModel = args.model.into();
 
     // Check if the API key is valid
-    if let Err(e) = check_api_key(&api_key).await {
+    if let Err(e) = check_api_key(&api_key, &base_url).await {
         return Err(e);
     }
 
-    let mut game = GameEngine::new(api_key, model);
+    let mut game = GameEngine::new(api_key, model, base_url);
     game.start_game().await?;
     
     Ok(())

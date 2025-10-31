@@ -67,14 +67,16 @@ pub struct AiRequest {
     client: reqwest::Client,
     api_key: String,
     model: GptModel,
+    base_url: String,
 }
 
 impl AiRequest {
-    pub fn new(api_key: String, model: GptModel) -> Self {
+    pub fn new(api_key: String, model: GptModel, base_url: String) -> Self {
         AiRequest {
             client: reqwest::Client::new(),
             api_key,
             model,
+            base_url,
         }
     }
 
@@ -90,7 +92,7 @@ impl AiRequest {
         ];
         
         let request = ChatRequest {
-            model: self.model.into(),
+            model: self.model.clone().into(),
             messages,
             max_tokens: Some(3000),
             temperature: Some(0.9),
@@ -106,11 +108,16 @@ impl AiRequest {
         
     
     async fn send_request(&self, request: &ChatRequest) -> Result<String, Box<dyn std::error::Error>> {
-        let url = "https://api.openai.com/v1/chat/completions";
+        let url = format!("{}/chat/completions", self.base_url);
         
-        let response = self.client
-            .post(url)
-            .bearer_auth(&self.api_key)
+        let mut req_builder = self.client.post(&url);
+        
+        // Only add bearer auth if API key is provided
+        if !self.api_key.is_empty() {
+            req_builder = req_builder.bearer_auth(&self.api_key);
+        }
+        
+        let response = req_builder
             .json(request)
             .send()
             .await?;

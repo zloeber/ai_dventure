@@ -10,9 +10,9 @@ pub struct GameEngine {
 }
 
 impl GameEngine {
-    pub fn new(api_key: String, model: GptModel) -> Self {
+    pub fn new(api_key: String, model: GptModel, base_url: String) -> Self {
         GameEngine {
-            ai_client: AiRequest::new(api_key, model),
+            ai_client: AiRequest::new(api_key, model, base_url),
             game_state: None,
         }
     }

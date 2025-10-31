@@ -29,6 +29,8 @@ Embark on a thrilling journey through worlds of fantasy, horror, sci-fi, or hist
 - **OpenAI API Key** - Get yours from [OpenAI's website](https://openai.com/api/)
 
 ### Installation & Running
+
+#### Using OpenAI
 ```bash
 # Clone the repository
 git clone https://github.com/your-username/ai_dventure.git
@@ -40,6 +42,26 @@ cargo run -- --api-key <YOUR_API_KEY>
 # Or set it as an environment variable
 export OPENAI_API_KEY=<YOUR_API_KEY>
 cargo run
+```
+
+#### Using Local OLLAMA
+```bash
+# Make sure OLLAMA is running locally
+# Install from: https://ollama.ai
+
+# Pull a model (if not already done)
+ollama pull llama3
+
+# Run the game with OLLAMA
+cargo run -- --base-url http://localhost:11434/v1 --model llama3
+
+# Or with environment variable
+export OPENAI_BASE_URL=http://localhost:11434/v1
+cargo run -- --model llama3
+
+# Try other models
+cargo run -- --base-url http://localhost:11434/v1 --model mistral
+cargo run -- --base-url http://localhost:11434/v1 --model codellama
 ```
 
 
@@ -70,26 +92,34 @@ What do you do? (type your choice or 'quit' to exit): I examine the gates for tr
 
 ## Requirements
 - Rust
-- OpenAI API key (ENV variable `OPENAI_API_KEY`)
+- OpenAI API key (ENV variable `OPENAI_API_KEY`) - or local OLLAMA installation
 
 ## Command line arguments
 The application accepts the following parameters:
-- `--api-key`: specify custom key if not defined in env
-- `--model`: choose OpenAI GPT model (e.g. `gpt-3.5-turbo`, `gpt-4o-mini`, `gpt-4-turbo`, etc.). If not specified `gpt-4o-mini` is used
+- `--api-key`: specify custom key if not defined in env (optional for local endpoints like OLLAMA)
+- `--model`: choose model name (e.g. `gpt-3.5-turbo`, `gpt-4o-mini`, `llama3`, `mistral`, etc.). If not specified `gpt-4o-mini` is used
+- `--base-url`: specify custom API base URL (ENV variable `OPENAI_BASE_URL`). Default: `https://api.openai.com/v1`
 
 Example:
 ```bash
-# Run in development mode
+# Run in development mode with OpenAI
 cargo run
 
-# With parameters
-cargo run -- --api-key <YOUR_API_KEY> --model gpt-5
+# With OpenAI parameters
+cargo run -- --api-key <YOUR_API_KEY> --model gpt-4o-mini
+
+# With local OLLAMA endpoint
+cargo run -- --base-url http://localhost:11434/v1 --model llama3
+
+# Using environment variables for OLLAMA
+export OPENAI_BASE_URL=http://localhost:11434/v1
+cargo run -- --model llama3
 
 # Build a release binary
 cargo build --release
 
-# Run the release binary
-./target/release/ai_dventure --api-key <YOUR_API_KEY> --model gpt-5
+# Run the release binary with OLLAMA
+./target/release/ai_dventure --base-url http://localhost:11434/v1 --model llama3
 ```
 
 ## License
