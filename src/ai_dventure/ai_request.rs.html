@@ -81,13 +81,13 @@
 <a href=#81 id=81 data-nosnippet>81</a>    }
 <a href=#82 id=82 data-nosnippet>82</a>
 <a href=#83 id=83 data-nosnippet>83</a>    
-<a href=#84 id=84 data-nosnippet>84</a>    <span class="kw">pub async fn </span>json_chat(<span class="kw-2">&amp;</span><span class="self">self</span>, game_state: <span class="kw-2">&amp;</span>GameState) -&gt; <span class="prelude-ty">Result</span>&lt;GameResponse, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
-<a href=#85 id=85 data-nosnippet>85</a>        <span class="kw">let </span>system_prompt = GamePrompt::get_system_prompt();
+<a href=#84 id=84 data-nosnippet>84</a>    <span class="kw">pub async fn </span>json_chat(<span class="kw-2">&amp;</span><span class="self">self</span>, game_state: <span class="kw-2">&amp;</span>GameState, prompts_config: <span class="kw-2">&amp;</span><span class="kw">crate</span>::config::PromptsConfig) -&gt; <span class="prelude-ty">Result</span>&lt;GameResponse, Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
+<a href=#85 id=85 data-nosnippet>85</a>        <span class="kw">let </span>system_prompt = GamePrompt::get_system_prompt(prompts_config);
 <a href=#86 id=86 data-nosnippet>86</a>        
 <a href=#87 id=87 data-nosnippet>87</a>        <span class="kw">let </span>user_prompt = GamePrompt::build_game_context_prompt(game_state);
 <a href=#88 id=88 data-nosnippet>88</a>        
 <a href=#89 id=89 data-nosnippet>89</a>        <span class="kw">let </span>messages = <span class="macro">vec!</span>[
-<a href=#90 id=90 data-nosnippet>90</a>            Message::system(system_prompt),
+<a href=#90 id=90 data-nosnippet>90</a>            Message::system(<span class="kw-2">&amp;</span>system_prompt),
 <a href=#91 id=91 data-nosnippet>91</a>            Message::user(<span class="kw-2">&amp;</span>user_prompt),
 <a href=#92 id=92 data-nosnippet>92</a>        ];
 <a href=#93 id=93 data-nosnippet>93</a>        

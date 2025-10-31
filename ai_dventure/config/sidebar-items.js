@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["default_base_url","default_model","default_themes"],"struct":["ApiConfig","Config","GameConfig","PromptsConfig"]};
