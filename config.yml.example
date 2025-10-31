@@ -1,0 +1,73 @@
+# AI Adventure Game Configuration Example
+# Copy this file to config.yml and modify as needed
+
+# API configuration
+api:
+  # OpenAI API key (optional if using environment variable OPENAI_API_KEY)
+  # api_key: "sk-your-api-key-here"
+  
+  # Model to use (default: gpt-4o-mini)
+  # Other options: gpt-4, gpt-3.5-turbo, llama3, mistral, etc.
+  model: "gpt-4o-mini"
+  
+  # Base URL for the API (default: https://api.openai.com/v1)
+  # For local OLLAMA: http://localhost:11434/v1
+  base_url: "https://api.openai.com/v1"
+
+# Game configuration
+game:
+  # Optional: Path where save games should be stored
+  # save_game_path: "./saves"
+
+# Prompts configuration
+# All prompts are optional. If not specified, defaults will be used.
+prompts:
+  # System prompt for the AI storyteller
+  # system_prompt: |
+  #   You are a creative AI storyteller for an immersive text-based adventure game...
+  
+  # Welcome message shown at game start
+  # welcome_message: |
+  #   === AI ADVENTURE ===
+  #   Welcome to the AI-powered adventure game!
+  
+  # Prompt asking for player's name
+  # player_name_prompt: "What's your name, adventurer? "
+  
+  # Theme selection prompt
+  # theme_selection_prompt: |
+  #   Select the theme of your adventure:
+  #   1. Fantasy - Dragons, magic, and enchanted realms
+  #   ...
+  
+  # Message shown after theme selection
+  # theme_selected_message: "Theme selected: {theme}"
+  
+  # Header for adventure start
+  # adventure_start_header: "=== ADVENTURE BEGINS ==="
+  
+  # Header for adventure continuation
+  # adventure_continues_header: "=== ADVENTURE CONTINUES ==="
+  
+  # Header for choices
+  # choices_header: "Available choices:"
+  
+  # Prompt for player input
+  # player_input_prompt: "What do you do? (type your choice or 'quit' to exit): "
+  
+  # Quit message
+  # quit_message: "Thanks for playing! Goodbye!"
+  
+  # Status header
+  # status_header: "=== PLAYER STATUS ==="
+  
+  # AI thinking message
+  # ai_thinking_message: "🤖  AI is cooking... ⏳"
+  
+  # Available themes (default themes shown below)
+  themes:
+    - "Medieval fantasy with dragons, magic, elves and enchanted kingdoms"
+    - "Dark horror with mysterious creatures, grim atmospheres and suspense"
+    - "Science fiction with spaceships, aliens, advanced technology and alien planets"
+    - "Historical with knights, duels, court intrigue and realistic settings"
+    - "Surprise theme chosen by AI"

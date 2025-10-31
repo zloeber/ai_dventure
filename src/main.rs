@@ -1,6 +1,7 @@
-use crate::{game_engine::GameEngine, gpt_model::GptModel};
+use crate::{game_engine::GameEngine, gpt_model::GptModel, config::Config};
 use clap::Parser;
 
+mod config;
 mod game_prompt;
 mod ai_request;
 mod game_state;
@@ -12,10 +13,10 @@ mod gpt_model;
 struct Args {
     #[arg(long, env = "OPENAI_API_KEY")]
     api_key: Option<String>,
-    #[arg(long, default_value = "gpt-4o-mini")]
-    model: String,
-    #[arg(long, env = "OPENAI_BASE_URL", default_value = "https://api.openai.com/v1")]
-    base_url: String,
+    #[arg(long)]
+    model: Option<String>,
+    #[arg(long, env = "OPENAI_BASE_URL")]
+    base_url: Option<String>,
 }
 
 async fn check_api_key(api_key: Option<&String>, base_url: &str) -> Result<(), Box<dyn std::error::Error>> {
@@ -43,17 +44,25 @@ async fn check_api_key(api_key: Option<&String>, base_url: &str) -> Result<(), B
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load configuration from file
+    let mut config = Config::load();
+    
+    // Parse CLI arguments
     let args = Args::parse();
-    let api_key = args.api_key.unwrap_or_default();
-    let base_url = args.base_url;
-    let model: GptModel = args.model.into();
+    
+    // Merge CLI args with config (CLI takes precedence)
+    config.merge_with_cli(args.api_key, args.model, args.base_url);
+    
+    let api_key = config.api.api_key.clone().unwrap_or_default();
+    let base_url = config.api.base_url.clone();
+    let model: GptModel = config.api.model.clone().into();
 
     // Check if the API key is valid
     if let Err(e) = check_api_key(if api_key.is_empty() { None } else { Some(&api_key) }, &base_url).await {
         return Err(e);
     }
 
-    let mut game = GameEngine::new(api_key, model, base_url);
+    let mut game = GameEngine::new(api_key, model, base_url, config);
     game.start_game().await?;
     
     Ok(())

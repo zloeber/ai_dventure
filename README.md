@@ -90,11 +90,27 @@ What do you do? (type your choice or 'quit' to exit): I examine the gates for tr
 - Rust
 - OpenAI API key (ENV variable `OPENAI_API_KEY`) - or local OLLAMA installation
 
-## Command line arguments
+## Configuration
+
+### Configuration File (config.yml)
+The application now supports a `config.yml` file for easy configuration management. You can:
+- Configure API settings (api_key, model, base_url)
+- Set save game location
+- Customize all game prompts and messages
+- Define custom adventure themes
+
+To use the configuration file:
+1. Copy `config.yml.example` to `config.yml`
+2. Edit the values as needed
+3. Run the application - it will automatically load the configuration
+
+**Note:** Command-line arguments and environment variables take precedence over config file values.
+
+### Command line arguments
 The application accepts the following parameters:
-- `--api-key`: specify custom key if not defined in env (optional for local endpoints like OLLAMA)
-- `--model`: choose model name (e.g. `gpt-3.5-turbo`, `gpt-4o-mini`, `llama3`, `mistral`, etc.). If not specified `gpt-4o-mini` is used
-- `--base-url`: specify custom API base URL (ENV variable `OPENAI_BASE_URL`). Default: `https://api.openai.com/v1`
+- `--api-key`: specify custom key if not defined in env or config file (optional for local endpoints like OLLAMA)
+- `--model`: choose model name (e.g. `gpt-3.5-turbo`, `gpt-4o-mini`, `llama3`, `mistral`, etc.). If not specified, uses config file or defaults to `gpt-4o-mini`
+- `--base-url`: specify custom API base URL (ENV variable `OPENAI_BASE_URL`). Default: `https://api.openai.com/v1` or value from config file
 
 Example:
 ```bash

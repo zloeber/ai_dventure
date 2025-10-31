@@ -1,5 +1,5 @@
 use crate::gpt_model::GptModel;
-use crate::{ai_request::AiRequest, game_state::GameState};
+use crate::{ai_request::AiRequest, game_state::GameState, config::Config};
 use crate::game_prompt::GamePrompt;
 use std::io::{self, Write};
 use colored::*;
@@ -7,18 +7,20 @@ use colored::*;
 pub struct GameEngine {
     ai_client: AiRequest,
     game_state: Option<GameState>,
+    config: Config,
 }
 
 impl GameEngine {
-    pub fn new(api_key: String, model: GptModel, base_url: String) -> Self {
+    pub fn new(api_key: String, model: GptModel, base_url: String, config: Config) -> Self {
         GameEngine {
             ai_client: AiRequest::new(api_key, model, base_url),
             game_state: None,
+            config,
         }
     }
 
     pub async fn start_game(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        println!("{}", GamePrompt::get_welcome_message());
+        println!("{}", GamePrompt::get_welcome_message(&self.config.prompts));
         
         // Get player's name
         let player_name = self.get_player_name();
@@ -32,15 +34,15 @@ impl GameEngine {
         if let Some(ref mut state) = self.game_state {
             state.set_current_prompt(GamePrompt::get_initial_story_prompt(&state.name, &theme));
             
-            println!("\n{}", GamePrompt::get_ai_thinking_message());
-            let response = self.ai_client.json_chat(state).await?;
+            println!("\n{}", GamePrompt::get_ai_thinking_message(&self.config.prompts));
+            let response = self.ai_client.json_chat(state, &self.config.prompts).await?;
             
             // Show the initial story
-            println!("\n{}", GamePrompt::get_adventure_start_header());
+            println!("\n{}", GamePrompt::get_adventure_start_header(&self.config.prompts));
             println!("{}", GamePrompt::format_story(&response.story).white());
             
             if !response.choices.is_empty() {
-                println!("\n{}", GamePrompt::get_choices_header());
+                println!("\n{}", GamePrompt::get_choices_header(&self.config.prompts));
                 for (i, choice) in response.choices.iter().enumerate() {
                     println!("{}. {}", i + 1, choice.green());
                 }
@@ -57,7 +59,7 @@ impl GameEngine {
     }
 
     fn get_player_name(&self) -> String {
-        print!("{}", GamePrompt::get_player_name_prompt());
+        print!("{}", GamePrompt::get_player_name_prompt(&self.config.prompts));
         io::stdout().flush().unwrap();
         
         let mut input = String::new();
@@ -66,39 +68,46 @@ impl GameEngine {
     }
 
     fn select_theme(&self) -> Result<String, Box<dyn std::error::Error>> {
-        println!("\n{}", GamePrompt::get_theme_selection_prompt());
+        println!("\n{}", GamePrompt::get_theme_selection_prompt(&self.config.prompts));
         
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
 
-        let mut custom_theme = String::new();
-        
-        let themes = GamePrompt::get_themes();
-        let theme = match input.trim() {
-            "1" => themes[0],
-            "2" => themes[1],
-            "3" => themes[2],
-            "4" => themes[3],
-            "5" => themes[4],
-            "6" => {
+        let themes = &self.config.prompts.themes;
+        let theme = if let Ok(choice) = input.trim().parse::<usize>() {
+            if choice == 6 {
+                // Custom theme option
                 print!("Enter your custom theme: ");
                 io::stdout().flush().unwrap();
                 
+                let mut custom_theme = String::new();
                 io::stdin().read_line(&mut custom_theme)?;
-                custom_theme.trim()
-            },
-            _ => themes[0], // Default to fantasy
+                custom_theme.trim().to_string()
+            } else if choice > 0 && choice <= themes.len() {
+                // Valid theme selection
+                themes[choice - 1].clone()
+            } else {
+                // Invalid choice, use default
+                themes.first()
+                    .cloned()
+                    .unwrap_or_else(|| "Medieval fantasy with dragons, magic, elves and enchanted kingdoms".to_string())
+            }
+        } else {
+            // Invalid input, use default
+            themes.first()
+                .cloned()
+                .unwrap_or_else(|| "Medieval fantasy with dragons, magic, elves and enchanted kingdoms".to_string())
         };
         
-        println!("\n{}", GamePrompt::get_theme_selected_message(theme));
-        Ok(theme.to_string())
+        println!("\n{}", GamePrompt::get_theme_selected_message(&theme, &self.config.prompts));
+        Ok(theme)
     }
 
     async fn game_loop(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         loop {
             if let Some(ref game_state) = self.game_state {
                 // Display current game status
-                game_state.display_status();
+                game_state.display_status(&self.config.prompts);
             }
             
             // Player input
@@ -107,7 +116,7 @@ impl GameEngine {
             // Special commands
             match player_choice.to_lowercase().as_str() {
                 "quit" | "exit" => {
-                    println!("{}", GamePrompt::get_quit_message());
+                    println!("{}", GamePrompt::get_quit_message(&self.config.prompts));
                     break;
                 },
                 "status" => {
@@ -124,7 +133,7 @@ impl GameEngine {
     }
 
     fn get_player_input(&self) -> String {
-        print!("\n{}", GamePrompt::get_player_input_prompt());
+        print!("\n{}", GamePrompt::get_player_input_prompt(&self.config.prompts));
         io::stdout().flush().unwrap();
         
         let mut input = String::new();
@@ -138,17 +147,17 @@ impl GameEngine {
             game_state.set_current_prompt(action);
             
             // Show AI thinking message
-            println!("\n{}", GamePrompt::get_ai_thinking_message());
+            println!("\n{}", GamePrompt::get_ai_thinking_message(&self.config.prompts));
             
             // Get AI response
-            let response = self.ai_client.json_chat(game_state).await?;
+            let response = self.ai_client.json_chat(game_state, &self.config.prompts).await?;
             
             // Show the new story
-            println!("\n{}", GamePrompt::get_adventure_continues_header());
+            println!("\n{}", GamePrompt::get_adventure_continues_header(&self.config.prompts));
             println!("{}", GamePrompt::format_story(&response.story).white());
             
             if !response.choices.is_empty() {
-                println!("\n{}", GamePrompt::get_choices_header());
+                println!("\n{}", GamePrompt::get_choices_header(&self.config.prompts));
                 for (i, choice) in response.choices.iter().enumerate() {
                     println!("{}. {}", i + 1, choice.green());
                 }

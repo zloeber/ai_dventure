@@ -59,11 +59,11 @@ impl GameState {
         self.current_prompt = prompt;
     }
 
-    pub fn display_status(&self) {
+    pub fn display_status(&self, prompts_config: &crate::config::PromptsConfig) {
         use colored::*;
         use crate::game_prompt::GamePrompt;
         
-        println!("\n{}", GamePrompt::display_status_header());
+        println!("\n{}", GamePrompt::display_status_header(prompts_config));
         let labels = GamePrompt::get_status_labels();
         
         println!("{} {}", labels.0, self.name.green());
