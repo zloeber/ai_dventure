@@ -1,12 +1,14 @@
 use colored::*;
 use crate::game_state::GameState;
+use crate::config::PromptsConfig;
 use textwrap;
 
 pub struct GamePrompt {}
 
 impl GamePrompt {
-    pub fn get_system_prompt() -> &'static str {
-        r#"
+    pub fn get_system_prompt(prompts_config: &PromptsConfig) -> String {
+        prompts_config.system_prompt.clone().unwrap_or_else(|| {
+            r#"
         You are a creative AI storyteller for an immersive text-based adventure game. Your role is to craft engaging, detailed, and atmospheric narratives that bring the game world to life.
 
         STORYTELLING GUIDELINES:
@@ -30,7 +32,8 @@ impl GamePrompt {
         }
 
         The "story" field should be substantial and engaging. Paint a picture with words and make the player feel immersed in the adventure.
-        "#
+        "#.to_string()
+        })
     }
 
     pub fn build_game_context_prompt(game_state: &GameState) -> String {
@@ -57,48 +60,46 @@ impl GamePrompt {
         )
     }
 
-    pub fn get_welcome_message() -> String {
-        format!("{}\n{}", 
-            "\n=== AI ADVENTURE ===".cyan().bold(),
-            "Welcome to the AI-powered adventure game!".green()
-        )
+    pub fn get_welcome_message(prompts_config: &PromptsConfig) -> String {
+        prompts_config.welcome_message.clone().unwrap_or_else(|| {
+            format!("{}\n{}", 
+                "\n=== AI ADVENTURE ===".cyan().bold(),
+                "Welcome to the AI-powered adventure game!".green()
+            )
+        })
     }
 
-    pub fn get_player_name_prompt() -> String {
-        "What's your name, adventurer? ".cyan().to_string()
+    pub fn get_player_name_prompt(prompts_config: &PromptsConfig) -> String {
+        prompts_config.player_name_prompt.clone().unwrap_or_else(|| {
+            "What's your name, adventurer? ".cyan().to_string()
+        })
     }
 
-    pub fn get_theme_selection_prompt() -> String {
-        let title = "Select the theme of your adventure:".cyan().bold();
-        let options = vec![
-            "1. Fantasy - Dragons, magic, and enchanted realms".green(),
-            "2. Dark/Horror - Cosmic horror and dark mysteries".red(),
-            "3. Sci-Fi - Space, technology, and aliens".blue(),
-            "4. Historical - Swords, duels, and intrigue".yellow(),
-            "5. Surprise me - Let the AI choose for you".magenta(),
-            "6. You choose - Custom theme".cyan()
-        ];
+    pub fn get_theme_selection_prompt(prompts_config: &PromptsConfig) -> String {
+        prompts_config.theme_selection_prompt.clone().unwrap_or_else(|| {
+            let title = "Select the theme of your adventure:".cyan().bold();
+            let options = vec![
+                "1. Fantasy - Dragons, magic, and enchanted realms".green(),
+                "2. Dark/Horror - Cosmic horror and dark mysteries".red(),
+                "3. Sci-Fi - Space, technology, and aliens".blue(),
+                "4. Historical - Swords, duels, and intrigue".yellow(),
+                "5. Surprise me - Let the AI choose for you".magenta(),
+                "6. You choose - Custom theme".cyan()
+            ];
 
-        let mut prompt = format!("{}\n", title);
-        for option in options {
-            prompt.push_str(&format!("{}\n", option));
-        }
-        prompt.push_str("Please enter the number of your choice: ");
-        prompt
+            let mut prompt = format!("{}\n", title);
+            for option in options {
+                prompt.push_str(&format!("{}\n", option));
+            }
+            prompt.push_str("Please enter the number of your choice: ");
+            prompt
+        })
     }
 
-    pub fn get_theme_selected_message(theme: &str) -> String {
-        format!("{} {}", "Theme selected:".green(), theme.yellow())
-    }
-
-    pub fn get_themes() -> Vec<&'static str> {
-        vec![
-            "Medieval fantasy with dragons, magic, elves and enchanted kingdoms",
-            "Dark horror with mysterious creatures, grim atmospheres and suspense",
-            "Science fiction with spaceships, aliens, advanced technology and alien planets",
-            "Historical with knights, duels, court intrigue and realistic settings",
-            "Surprise theme chosen by AI",
-        ]
+    pub fn get_theme_selected_message(theme: &str, prompts_config: &PromptsConfig) -> String {
+        prompts_config.theme_selected_message.clone().unwrap_or_else(|| {
+            format!("{} {}", "Theme selected:".green(), theme.yellow())
+        })
     }
 
     pub fn get_initial_story_prompt(player_name: &str, theme: &str) -> String {
@@ -113,28 +114,40 @@ impl GamePrompt {
         )
     }
 
-    pub fn get_adventure_start_header() -> String {
-        "=== ADVENTURE BEGINS ===".cyan().bold().to_string()
+    pub fn get_adventure_start_header(prompts_config: &PromptsConfig) -> String {
+        prompts_config.adventure_start_header.clone().unwrap_or_else(|| {
+            "=== ADVENTURE BEGINS ===".cyan().bold().to_string()
+        })
     }
 
-    pub fn get_adventure_continues_header() -> String {
-        "=== ADVENTURE CONTINUES ===".cyan().bold().to_string()
+    pub fn get_adventure_continues_header(prompts_config: &PromptsConfig) -> String {
+        prompts_config.adventure_continues_header.clone().unwrap_or_else(|| {
+            "=== ADVENTURE CONTINUES ===".cyan().bold().to_string()
+        })
     }
 
-    pub fn get_choices_header() -> String {
-        "Available choices:".yellow().to_string()
+    pub fn get_choices_header(prompts_config: &PromptsConfig) -> String {
+        prompts_config.choices_header.clone().unwrap_or_else(|| {
+            "Available choices:".yellow().to_string()
+        })
     }
 
-    pub fn get_player_input_prompt() -> String {
-        "What do you do? (type your choice or 'quit' to exit): ".cyan().to_string()
+    pub fn get_player_input_prompt(prompts_config: &PromptsConfig) -> String {
+        prompts_config.player_input_prompt.clone().unwrap_or_else(|| {
+            "What do you do? (type your choice or 'quit' to exit): ".cyan().to_string()
+        })
     }
 
-    pub fn get_quit_message() -> String {
-        "Thanks for playing! Goodbye!".red().to_string()
+    pub fn get_quit_message(prompts_config: &PromptsConfig) -> String {
+        prompts_config.quit_message.clone().unwrap_or_else(|| {
+            "Thanks for playing! Goodbye!".red().to_string()
+        })
     }
 
-    pub fn display_status_header() -> String {
-        "=== PLAYER STATUS ===".cyan().bold().to_string()
+    pub fn display_status_header(prompts_config: &PromptsConfig) -> String {
+        prompts_config.status_header.clone().unwrap_or_else(|| {
+            "=== PLAYER STATUS ===".cyan().bold().to_string()
+        })
     }
 
     pub fn get_status_labels() -> (String, String, String, String, String) {
@@ -151,8 +164,10 @@ impl GamePrompt {
         "=".repeat(30).cyan().to_string()
     }
 
-    pub fn get_ai_thinking_message() -> String {
-        "🤖  AI is cooking... ⏳".yellow().italic().to_string()
+    pub fn get_ai_thinking_message(prompts_config: &PromptsConfig) -> String {
+        prompts_config.ai_thinking_message.clone().unwrap_or_else(|| {
+            "🤖  AI is cooking... ⏳".yellow().italic().to_string()
+        })
     }
 
     pub fn format_story(story: &str) -> String {

@@ -81,13 +81,13 @@ impl AiRequest {
     }
 
     
-    pub async fn json_chat(&self, game_state: &GameState) -> Result<GameResponse, Box<dyn std::error::Error>> {
-        let system_prompt = GamePrompt::get_system_prompt();
+    pub async fn json_chat(&self, game_state: &GameState, prompts_config: &crate::config::PromptsConfig) -> Result<GameResponse, Box<dyn std::error::Error>> {
+        let system_prompt = GamePrompt::get_system_prompt(prompts_config);
         
         let user_prompt = GamePrompt::build_game_context_prompt(game_state);
         
         let messages = vec![
-            Message::system(system_prompt),
+            Message::system(&system_prompt),
             Message::user(&user_prompt),
         ];
         
